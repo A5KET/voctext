@@ -58,7 +58,7 @@ export default function TranscriptionViewer({ transcription }: TranscriptionView
                 </div>
 
                 <div className="space-y-4 relative">
-                    <div className={`relative ${!isExpanded ? 'h-64 overflow-hidden' : ''}`}>
+                    <div className={`relative ${!isExpanded ? 'max-h-72 overflow-y-auto' : ''}`}>
                         <p ref={textRef} className="text-sm text-muted-foreground whitespace-pre-wrap">
                             {transcription.text}
                         </p>
@@ -66,7 +66,7 @@ export default function TranscriptionViewer({ transcription }: TranscriptionView
                             <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-background to-transparent" />
                         )}
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mt-5">
                         {isOverflowing && (
                             <Button
                                 variant="link"

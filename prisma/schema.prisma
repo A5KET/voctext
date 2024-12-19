@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TranscriptionRequestStatus {
+  PROCESSING
+  FAILED
+  COMPLETED
+}
+
+model TranscriptionRequest {
+  id              String                     @id @default(uuid())
+  userId          String?
+  transcription   Transcription?            @relation(fields: [transcriptionId], references: [id])
+  fileName        String?
+  status          TranscriptionRequestStatus @default(PROCESSING)
+  error           String?
+  transcriptionId String?
+}
+
+model Transcription {
+  id                   String                 @id @default(uuid())
+  userId               String?
+  title                String
+  text                 String
+  duration             Float
+  language             String
+  createdAt            DateTime               @default(now())
+  TranscriptionRequest TranscriptionRequest[]
+}

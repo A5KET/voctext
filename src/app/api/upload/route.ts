@@ -1,39 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { fetchFileTranscription, fileUploadSchema } from '@/lib/upload'
+import { fetchFileTranscription as fetchRawFileTranscription, fileUploadSchema } from '@/lib/transcription'
 import { ZodError } from 'zod'
-import { getCurrentTime } from '@/lib/utils'
-import { Transcription } from '@/lib/definitions'
+import { Transcription, TranscriptionRequestStatus } from '@/lib/definitions'
+import {
+    confirmTranscriptionRequest,
+    createTranscription,
+    createTranscriptionRequest,
+    setTranscriptionRequestError,
+} from '@/lib/data'
+import { auth } from '@clerk/nextjs/server'
+import { AxiosError } from 'axios'
 
 export async function POST(request: NextRequest) {
     const formData = await request.formData()
+    const { userId } = await auth()
+
+    const transcriptionRequest = await createTranscriptionRequest({
+        userId,
+        status: TranscriptionRequestStatus.PROCESSING,
+    })
+
+    let data
 
     try {
-        const data = fileUploadSchema.parse({
+        data = fileUploadSchema.parse({
             file: formData.get('file'),
-        })
-
-        const transcription = await fetchFileTranscription(data.file)
-        const date = getCurrentTime()
-        const title = data.file.name
-
-        return NextResponse.json<{ data: Transcription }>({
-            data: {
-                id: 0,
-                language: transcription.language,
-                text: transcription.text,
-                duration: transcription.duration,
-                title,
-                date,
-            },
         })
     } catch (error) {
         if (error instanceof ZodError) {
+            await setTranscriptionRequestError(transcriptionRequest, error.message)
+
             return NextResponse.json({ error: error.errors }, { status: 400 })
         }
 
-        console.error(error)
+        throw error
+    }
 
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    try {
+        const rawTranscription = await fetchRawFileTranscription(data.file)
+        const transcription = await createTranscription({
+            text: rawTranscription.text,
+            duration: rawTranscription.duration,
+            language: rawTranscription.language,
+            title: data.file.name,
+            userId,
+        })
+
+        await confirmTranscriptionRequest(transcriptionRequest, transcription, data.file.name)
+
+        return NextResponse.json<{ data: Transcription }>({
+            data: transcription,
+        })
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            await setTranscriptionRequestError(transcriptionRequest, error.message)
+
+            return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+        }
+
+        throw error
     }
 }

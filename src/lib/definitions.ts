@@ -1,8 +1,2 @@
-export interface Transcription {
-  id: number
-  title: string
-  language: string
-  duration: number
-  text: string
-  date: string
-}
+export type { Transcription, TranscriptionRequest } from '@prisma/client'
+export { TranscriptionRequestStatus } from '@prisma/client'
