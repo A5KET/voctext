@@ -20,10 +20,18 @@ export default function DashboardTranscription({ transcription }: TranscriptionV
     return (
         <>
             <CardContent className="p-6 flex flex-col">
-                <Button variant="default" onClick={handleDownload} className="bg-blue-500 hover:bg-blue-600 w-fit ml-auto">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Transcription
-                </Button>
+                <div className="flex pb-5">
+                    <div className="text-xl font-bold">{transcription.title}</div>
+                    <Button
+                        variant="default"
+                        onClick={handleDownload}
+                        className="bg-blue-500 hover:bg-blue-600 w-fit ml-auto"
+                    >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download Transcription
+                    </Button>
+                </div>
+
                 <div className="grid grid-cols-3 gap-4 mb-6">
                     <div>
                         <h3 className="text-sm font-medium font-bold text-muted-foreground">Language</h3>
