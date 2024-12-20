@@ -13,23 +13,39 @@ import {
 } from '@/lib/data'
 import { auth } from '@clerk/nextjs/server'
 import { AxiosError } from 'axios'
+import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies'
 
 const MAX_FREE_TRANSCRIPTIONS_COUNT = 2
 
-export async function POST(request: NextRequest) {
-    const formData = await request.formData()
-    const { userId } = await auth()
-    let transcriptionCount
-    let isUserSupporter
-
+async function getTranscriptionCountAndSupportStatus(userId: string | null, cookies: RequestCookies) {
     if (!userId) {
-        const cookies = request.cookies
-        transcriptionCount = parseInt(cookies.get('transcriptionCount')?.value || '0', 10)
-        isUserSupporter = false
-    } else {
-        transcriptionCount = await fetchUserTranscriptionCount(userId)
-        isUserSupporter = await checkIsUserSupporter(userId)
+        const transcriptionCount = parseInt(cookies.get('transcriptionCount')?.value || '0', 10)
+        return { transcriptionCount, isUserSupporter: false }
     }
+
+    const transcriptionCount = await fetchUserTranscriptionCount(userId)
+    const isUserSupporter = await checkIsUserSupporter(userId)
+
+    return { transcriptionCount, isUserSupporter }
+}
+
+async function handleFileUpload(formData: FormData) {
+    try {
+        const data = fileUploadSchema.parse({
+            file: formData.get('file'),
+        })
+        return data
+    } catch (error) {
+        if (error instanceof ZodError) {
+            throw error
+        }
+        throw error
+    }
+}
+
+export async function POST(request: NextRequest) {
+    const { userId } = await auth()
+    const { transcriptionCount, isUserSupporter } = await getTranscriptionCountAndSupportStatus(userId, request.cookies)
 
     if (transcriptionCount >= MAX_FREE_TRANSCRIPTIONS_COUNT && !isUserSupporter) {
         return NextResponse.json(
@@ -46,9 +62,7 @@ export async function POST(request: NextRequest) {
     let data
 
     try {
-        data = fileUploadSchema.parse({
-            file: formData.get('file'),
-        })
+        data = await handleFileUpload(await request.formData())
     } catch (error) {
         if (error instanceof ZodError) {
             await setTranscriptionRequestError(transcriptionRequest, error.message)
@@ -59,34 +73,35 @@ export async function POST(request: NextRequest) {
         throw error
     }
 
+    let rawTranscription
+
     try {
-        const rawTranscription = await fetchRawFileTranscription(data.file)
-        const transcription = await createTranscription({
-            text: rawTranscription.text,
-            duration: rawTranscription.duration,
-            language: rawTranscription.language,
-            title: data.file.name,
-            userId,
-        })
-
-        await confirmTranscriptionRequest(transcriptionRequest, transcription, data.file.name)
-
-        const response = NextResponse.json<{ data: Transcription }>({
-            data: transcription,
-        })
-
-        if (!userId) {
-            response.cookies.set('transcriptionCount', String(transcriptionCount + 1), { maxAge: 60 * 60 * 24 * 7 })
-        }
-
-        return response
+        rawTranscription = await fetchRawFileTranscription(data.file)
     } catch (error) {
         if (error instanceof AxiosError) {
             await setTranscriptionRequestError(transcriptionRequest, error.message)
-
-            return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
         }
 
         throw error
     }
+
+    const transcription = await createTranscription({
+        text: rawTranscription.text,
+        duration: rawTranscription.duration,
+        language: rawTranscription.language,
+        title: data.file.name,
+        userId,
+    })
+
+    await confirmTranscriptionRequest(transcriptionRequest, transcription, data.file.name)
+
+    const response = NextResponse.json<{ data: Transcription }>({
+        data: transcription,
+    })
+
+    if (!userId) {
+        response.cookies.set('transcriptionCount', String(transcriptionCount + 1), { maxAge: 60 * 60 * 24 * 7 })
+    }
+
+    return response
 }

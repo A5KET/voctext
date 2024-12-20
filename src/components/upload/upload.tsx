@@ -8,7 +8,7 @@ export interface FileDropzoneProps {
     onUploadError: (error: string) => void
 }
 
-export default function AudioUpload({ onFileUploadAction, onUploadError }: FileDropzoneProps) {
+export default function Upload({ onFileUploadAction, onUploadError }: FileDropzoneProps) {
     const onDrop = useCallback(
         <T extends File>(acceptedFiles: T[], fileRejections: FileRejection[]) => {
             if (fileRejections.length > 0) {

@@ -1,6 +1,7 @@
 import { fetchTranscriptions } from '@/lib/data'
 import { auth } from '@clerk/nextjs/server'
-import Dashboard from '@/components/dashboard'
+import Dashboard from '@/components/dashboard/dashboard'
+
 
 export default async function Page() {
     const { userId } = await auth()

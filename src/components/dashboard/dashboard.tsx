@@ -2,9 +2,9 @@
 
 import { Transcription } from '@/lib/definitions'
 import { useState } from 'react'
-import DashboardSidebar from '@/components/dashboard-sidebar'
+import DashboardSidebar from '@/components/dashboard/sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import DashboardTranscription from './dashboard-transcription'
+import DashboardTranscription from './trasncription'
 
 export default function Dashboard({ transcriptions }: { transcriptions: Transcription[] }) {
     const [selectedTranscription, setSelectedTranscription] = useState<Transcription | undefined>(undefined)

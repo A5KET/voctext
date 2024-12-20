@@ -1,5 +1,7 @@
 import { SignUp } from '@clerk/nextjs'
 
+import '@/components/ui/auth.css'
+
 export default function Page() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-background">

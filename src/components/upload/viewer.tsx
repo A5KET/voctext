@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Download } from 'lucide-react'
 
-import { Transcription } from '../lib/definitions'
-import { Button } from './ui/button'
-import { Card, CardContent } from './ui/card'
+import { Transcription } from '@/lib/definitions'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '../ui/card'
 import { downloadTranscription } from '@/lib/download'
 
 export interface TranscriptionViewerProps {

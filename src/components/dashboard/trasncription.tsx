@@ -2,9 +2,9 @@
 
 import { Download } from 'lucide-react'
 
-import { Transcription } from '../lib/definitions'
-import { Button } from './ui/button'
-import { CardContent } from './ui/card'
+import { Transcription } from '@/lib/definitions'
+import { Button } from '../ui/button'
+import { CardContent } from '../ui/card'
 import { downloadTranscription } from '@/lib/download'
 import { formatDuration } from '@/lib/utils'
 

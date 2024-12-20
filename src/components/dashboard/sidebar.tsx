@@ -2,7 +2,7 @@
 
 import { FileAudio } from 'lucide-react'
 import { Transcription } from '@/lib/definitions'
-import TranscriptionItem from '@/components/transcription-item'
+import DashboardSidebarItem from '@/components/dashboard/sidebar-item'
 import { Button } from '@/components/ui/button'
 import {
     Sidebar,
@@ -49,7 +49,7 @@ export default function DashboardSidebar({ transcriptions, selectedTranscription
                     <SidebarGroupContent>
                         <SidebarMenu className="gap-4">
                             {transcriptions.map((transcription) => (
-                                <TranscriptionItem
+                                <DashboardSidebarItem
                                     key={transcription.id}
                                     transcription={transcription}
                                     isSelected={transcription == selectedTranscription}

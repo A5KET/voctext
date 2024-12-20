@@ -11,7 +11,7 @@ interface TranscriptionItemProps {
     onClick: () => void
 }
 
-export default function TranscriptionItem({ transcription, isSelected, onClick }: TranscriptionItemProps) {
+export default function DashboardSidebarItem({ transcription, isSelected, onClick }: TranscriptionItemProps) {
     return (
         <SidebarMenuItem>
             <SidebarMenuButton isActive={isSelected} onClick={onClick}>

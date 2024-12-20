@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import AudioUpload from '../components/audio-upload'
-import TranscriptionViewer from '@/components/transcription-viewer'
+import Upload from '../components/upload/upload'
+import TranscriptionViewer from '../components/upload/viewer'
 import { Transcription } from '@/lib/definitions'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
@@ -10,9 +10,10 @@ import { Text } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { uploadFile } from '@/lib/upload'
 import Head from './head'
-import { UploadError } from '@/components/upload-error'
-import SupportForm from '@/components/support-form'
-import { SupportPaymentNotification } from '@/components/support-notification'
+import { UploadError } from '@/components/upload/error'
+import SupportForm from '@/components/support/form'
+import { SupportPaymentNotification } from '@/components/support/notification'
+import Loader from '@/components/ui/loader'
 
 export default function Page() {
     const router = useRouter()
@@ -81,11 +82,11 @@ export default function Page() {
                     </header>
                     <main className="flex flex-col items-center">
                         <div>
-                            <AudioUpload onFileUploadAction={onAudioFileUpload} onUploadError={setUploadError} />
+                            <Upload onFileUploadAction={onAudioFileUpload} onUploadError={setUploadError} />
                             {uploadError ? <UploadError error={uploadError} /> : null}
                             {transcription ? <TranscriptionViewer transcription={transcription} /> : null}
                         </div>
-                        {isLoadingTranscription ? <p>Loading...</p> : null}
+                        {isLoadingTranscription ? <Loader /> : null}
                         <SupportForm />
                     </main>
                 </div>
