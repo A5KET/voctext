@@ -58,7 +58,7 @@ function SupportFormContent() {
     }
 
     return (
-        <Card className="w-full max-w-md mx-auto">
+        <Card className="w-full max-w-md mx-auto mt-10">
             <CardHeader className="text-center">
                 <CardTitle className="text-3xl font-bold">Support Our Work</CardTitle>
                 <CardDescription className="text-lg">

@@ -15,7 +15,7 @@ export async function fetchTranscriptions(userId: string) {
 
 export async function createTranscription(transcription: Prisma.TranscriptionCreateInput) {
     return prisma.transcription.create({
-        data: transcription
+        data: transcription,
     })
 }
 
@@ -74,9 +74,24 @@ export async function deleteTranscription(transcription: Transcription) {
     })
 }
 
-
 export async function createPayment(payment: Prisma.PaymentCreateInput) {
     return prisma.payment.create({
-        data: payment
+        data: payment,
     })
+}
+
+export async function fetchUserTranscriptionCounter(userId: string) {
+    return prisma.transcription.count({
+        where: {
+            userId,
+        },
+    })
+}
+
+export async function checkIsUserSupporter(userId: string) {
+    return Boolean(await prisma.payment.findFirst({
+        where: {
+            userId
+        }
+    }))
 }

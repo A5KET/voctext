@@ -38,9 +38,9 @@ export default function Page() {
         } catch (error) {
             if ((error as Error).message) {
                 setUploadError((error as Error).message)
+            } else {
+                throw error
             }
-
-            throw error
         }
 
         setIsLoadingTranscription(false)
