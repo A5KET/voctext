@@ -43,9 +43,8 @@ export default function AudioUpload({ onFileUploadAction }: FileDropzoneProps) {
         <div className="max-w-3xl mx-auto p-6 space-y-6">
             <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors space-y-3 ${
-                    isDragActive ? 'border-primary bg-primary/5' : ''
-                }`}
+                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors space-y-3 hover:border-primary
+                    ${isDragActive ? 'border-primary bg-primary/5' : ''}`}
             >
                 <input {...getInputProps()} />
                 <p className="text-muted-foreground">Drag and drop an audio file here, or click to select</p>

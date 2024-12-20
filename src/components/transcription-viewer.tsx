@@ -58,7 +58,7 @@ export default function TranscriptionViewer({ transcription }: TranscriptionView
                 </div>
 
                 <div className="space-y-4 relative">
-                    <div className={`relative ${!isExpanded ? 'max-h-72 overflow-y-auto' : ''}`}>
+                    <div className={`relative ${!isExpanded ? 'max-h-[18rem] overflow-hidden' : ''}`}>
                         <p ref={textRef} className="text-sm text-muted-foreground whitespace-pre-wrap">
                             {transcription.text}
                         </p>
