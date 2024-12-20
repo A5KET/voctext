@@ -1,24 +1,19 @@
-import { Sidebar } from '@/components/sidebar'
-import SidebarTranscription from '@/components/sidebar-transcription'
 import { fetchTranscriptions } from '@/lib/data'
 import { auth } from '@clerk/nextjs/server'
+import Dashboard from '@/components/dashboard'
 
-export default async function Home() {
+export default async function Page() {
     const { userId } = await auth()
 
     if (!userId) {
-        throw Error('Missing user')
+        throw Error('missing user')
     }
 
-    const trasncriptions = await fetchTranscriptions(userId)
+    const transcirptions = await fetchTranscriptions(userId)
 
-    return (
-        <>
-            <Sidebar>
-                {trasncriptions.map((transcription) => {
-                    return <SidebarTranscription transcription={transcription} key={transcription.id}/>
-                })}
-            </Sidebar>
-        </>
-    )
+    return <Dashboard transcriptions={transcirptions} />
+}
+
+export const metadata = {
+    title: 'Dashboard - Voctext',
 }
