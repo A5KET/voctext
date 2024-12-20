@@ -213,8 +213,3 @@ h1[data-localization-key='userProfile.navbar.title'] {
 .cl-userButtonPopoverMain {
     @apply rounded-lg border-input bg-background;
 }
-
-.cl-avatarBox {
-    width: 3em;
-    height: 3em;
-}

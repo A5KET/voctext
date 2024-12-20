@@ -91,3 +91,8 @@ body {
         @apply bg-background text-foreground;
     }
 }
+
+.cl-avatarBox {
+    width: 3em;
+    height: 3em;
+}
