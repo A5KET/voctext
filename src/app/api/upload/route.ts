@@ -75,7 +75,9 @@ export async function POST(request: NextRequest) {
             data: transcription,
         })
 
-        response.cookies.set('transcriptionCount', String(transcriptionCount + 1), { maxAge: 60 * 60 * 24 * 7 })
+        if (!userId) {
+            response.cookies.set('transcriptionCount', String(transcriptionCount + 1), { maxAge: 60 * 60 * 24 * 7 })
+        }
 
         return response
     } catch (error) {
