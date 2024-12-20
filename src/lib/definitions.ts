@@ -1,2 +1,2 @@
-export type { Transcription, TranscriptionRequest } from '@prisma/client'
+export type { Transcription, TranscriptionRequest, Payment } from '@prisma/client'
 export { TranscriptionRequestStatus } from '@prisma/client'

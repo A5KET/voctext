@@ -73,3 +73,10 @@ export async function deleteTranscription(transcription: Transcription) {
         },
     })
 }
+
+
+export async function createPayment(payment: Prisma.PaymentCreateInput) {
+    return prisma.payment.create({
+        data: payment
+    })
+}

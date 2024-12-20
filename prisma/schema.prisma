@@ -16,7 +16,7 @@ enum TranscriptionRequestStatus {
 model TranscriptionRequest {
   id              String                     @id @default(uuid())
   userId          String?
-  transcription   Transcription?            @relation(fields: [transcriptionId], references: [id])
+  transcription   Transcription?             @relation(fields: [transcriptionId], references: [id])
   fileName        String?
   status          TranscriptionRequestStatus @default(PROCESSING)
   error           String?
@@ -32,4 +32,13 @@ model Transcription {
   language             String
   createdAt            DateTime               @default(now())
   TranscriptionRequest TranscriptionRequest[]
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  userId          String
+  paymentIntentId String
+  amount          Int
+  status          String
+  createdAt       DateTime @default(now())
 }
