@@ -35,7 +35,7 @@ export default function Home() {
         <>
             <Head />
             <div className="flex justify-center">
-                <div className="min-h-screen p-5">
+                <div className="p-5">
                     <header className="flex justify-center flex-col">
                         <nav className="flex flex-1 justify-end">
                             <SignedOut>
@@ -55,9 +55,10 @@ export default function Home() {
                                 </UserButton>
                             </SignedIn>
                         </nav>
-                        <h1 className="text-4xl font-bold pt-10 mx-auto">Audio Transcription</h1>
+                        <h1 className="text-4xl font-bold p-5 mx-auto">Voctext</h1>
+                        <h2 className="text-3xl mx-auto">Audio Transcription</h2>
                     </header>
-                    <main className="flex flex-col items-center min-h-screen">
+                    <main className="flex flex-col items-center">
                         <div>
                             <AudioUpload onFileUploadAction={onAudioFileUpload} />
                             {transcription ? <TranscriptionViewer transcription={transcription} /> : null}
