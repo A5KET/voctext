@@ -10,19 +10,30 @@ import { Text } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { uploadFile } from '@/lib/upload'
 import Head from './head'
+import { UploadError } from '@/components/upload-error'
 
-export default function Home() {
+export default function Page() {
     const router = useRouter()
+    const [uploadError, setUploadError] = useState<string | null>(null)
     const [isLoadingTranscription, setIsLoadingTranscription] = useState(false)
     const [transcription, setTranscription] = useState<null | Transcription>(null)
 
     async function onAudioFileUpload(file: File) {
+        setUploadError(null)
         setTranscription(null)
         setIsLoadingTranscription(true)
 
-        const transcription = await uploadFile(file)
+        try {
+            const transcription = await uploadFile(file)
+            setTranscription(transcription)
+        } catch (error) {
+            if ((error as Error).message) {
+                setUploadError((error as Error).message)
+            }
 
-        setTranscription(transcription)
+            throw error
+        }
+
         setIsLoadingTranscription(false)
     }
 
@@ -60,7 +71,8 @@ export default function Home() {
                     </header>
                     <main className="flex flex-col items-center">
                         <div>
-                            <AudioUpload onFileUploadAction={onAudioFileUpload} />
+                            <AudioUpload onFileUploadAction={onAudioFileUpload} onUploadError={setUploadError}/>
+                            {uploadError ? <UploadError error={uploadError} /> : null}
                             {transcription ? <TranscriptionViewer transcription={transcription} /> : null}
                         </div>
                         {isLoadingTranscription ? <p>Loading...</p> : null}

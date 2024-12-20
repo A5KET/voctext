@@ -5,16 +5,23 @@ import { useDropzone, FileRejection } from 'react-dropzone'
 
 export interface FileDropzoneProps {
     onFileUploadAction: (file: File) => void
+    onUploadError: (error: string) => void
 }
 
-export default function AudioUpload({ onFileUploadAction }: FileDropzoneProps) {
+export default function AudioUpload({ onFileUploadAction, onUploadError }: FileDropzoneProps) {
     const onDrop = useCallback(
         <T extends File>(acceptedFiles: T[], fileRejections: FileRejection[]) => {
             if (fileRejections.length > 0) {
-                const errorMessage = fileRejections
-                    .map(({ errors }) => errors.map((e) => e.message).join(', '))
-                    .join('; ')
-                console.error(errorMessage)
+                const error = fileRejections[0].errors[0]
+                let errorMessage = 'Upload error'
+
+                if (error.code === 'file-invalid-type') {
+                    errorMessage = 'Invalid file type, please upload an audio file.'
+                } else if (error.code === 'file-too-large') {
+                    errorMessage = 'File is too large. Please upload a file smaller than 25MB.'
+                }
+
+                onUploadError(errorMessage)
 
                 return
             }
