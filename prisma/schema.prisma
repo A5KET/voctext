@@ -21,6 +21,7 @@ model TranscriptionRequest {
   status          TranscriptionRequestStatus @default(PROCESSING)
   error           String?
   transcriptionId String?
+  createdAt       DateTime                   @default(now())
 }
 
 model Transcription {
