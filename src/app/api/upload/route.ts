@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { fetchFileTranscription as fetchRawFileTranscription, fileUploadSchema } from '@/lib/transcription'
 import { ZodError } from 'zod'
-import { Transcription, TranscriptionRequestStatus } from '@/lib/definitions'
+import { Transcription } from '@/lib/definitions'
 import {
     checkIsUserSupporter,
     confirmTranscriptionRequest,
@@ -47,17 +47,16 @@ export async function POST(request: NextRequest) {
     const { userId } = await auth()
     const { transcriptionCount, isUserSupporter } = await getTranscriptionCountAndSupportStatus(userId, request.cookies)
 
+    const transcriptionRequest = await createTranscriptionRequest(userId)
+
     if (transcriptionCount >= MAX_FREE_TRANSCRIPTIONS_COUNT && !isUserSupporter) {
+        await setTranscriptionRequestError(transcriptionRequest, 'Reached the limit of free transcriptions')
+
         return NextResponse.json(
-            { error: 'You have reached the limit of free records. Please support to continue.' },
+            { error: 'You have reached the limit of free transcriptions. Please support to continue.' },
             { status: 400 }
         )
     }
-
-    const transcriptionRequest = await createTranscriptionRequest({
-        userId,
-        status: TranscriptionRequestStatus.PROCESSING,
-    })
 
     let data
 

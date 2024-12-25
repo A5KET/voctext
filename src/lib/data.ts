@@ -1,6 +1,6 @@
 'use server'
 
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient, Prisma, TranscriptionRequestStatus } from '@prisma/client'
 import { Transcription, TranscriptionRequest } from './definitions'
 
 const prisma = new PrismaClient()
@@ -19,9 +19,12 @@ export async function createTranscription(transcription: Prisma.TranscriptionCre
     })
 }
 
-export async function createTranscriptionRequest(transcriptionRequest: Prisma.TranscriptionRequestCreateInput) {
+export async function createTranscriptionRequest(userId: string | null) {
     return prisma.transcriptionRequest.create({
-        data: transcriptionRequest,
+        data: {
+            userId,
+            status: TranscriptionRequestStatus.PROCESSING
+        },
     })
 }
 
@@ -50,6 +53,7 @@ export async function setTranscriptionRequestError(transcriptionRequest: Transcr
             id: transcriptionRequest.id,
         },
         data: {
+            status: TranscriptionRequestStatus.FAILED,
             error,
         },
     })
